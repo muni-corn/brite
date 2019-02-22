@@ -2,7 +2,7 @@ package brite
 
 import (
 	"image"
-    "math"
+	"math"
 )
 
 // ImageBrightness represents image brightness. It is either
@@ -18,33 +18,33 @@ const (
 // GetImageBrightness returns an ImageBrightness pertaining
 // to the brightness of an image `img` and section `section`
 func GetImageBrightness(img image.Image, section ImageSection) (classification ImageBrightness, brightness float32) {
-    bounds := getBounds(img, section)
+	bounds := getBounds(img, section)
 
-    var darkCount, lightCount int
+	var darkCount, lightCount int
 
-    for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-        for x := bounds.Min.X; x < bounds.Max.X; x++ {
-            r, g, b, _ := img.At(x, y).RGBA()
-            max := math.Max(math.Max(float64(r), float64(g)), float64(b))
-            if (max > 0x8888) {
-                lightCount++;
-            } else {
-                darkCount++;
-            }
-        }
-    }
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			r, g, b, _ := img.At(x, y).RGBA()
+			max := math.Max(math.Max(float64(r), float64(g)), float64(b))
+			if max > 0x8000 {
+				lightCount++
+			} else {
+				darkCount++
+			}
+		}
+	}
 
-    brightness = float32(lightCount)/float32(darkCount+lightCount)
+	brightness = float32(lightCount) / float32(darkCount+lightCount)
 
-    // if more light pixels than dark pixels, return light
-    if (lightCount > darkCount) {
-        classification = Light
-    }
+	// if more light pixels than dark pixels, return light
+	if lightCount > darkCount {
+		classification = Light
+	}
 
-    // else, return Dark
-    classification = Dark
+	// else, return Dark
+	classification = Dark
 
-    return
+	return
 }
 
 // ImageSection represents a section of the image.
@@ -53,7 +53,7 @@ type ImageSection int
 // Image section definitions
 const (
 	All ImageSection = iota
-    Center
+	Center
 	LeftHalf
 	UpperHalf
 	RightHalf
@@ -71,7 +71,7 @@ func getBounds(img image.Image, section ImageSection) image.Rectangle {
 	switch section {
 	case All:
 		return img.Bounds()
-    case Center:
+	case Center:
 		return image.Rect(w/3, h/3, w*2/3, h*2/3)
 	case LeftHalf:
 		return image.Rect(0, 0, w/2, h)
@@ -91,6 +91,5 @@ func getBounds(img image.Image, section ImageSection) image.Rectangle {
 		return image.Rect(0, h/2, w/2, h)
 	}
 
-    return img.Bounds()
+	return img.Bounds()
 }
-
