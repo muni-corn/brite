@@ -15,11 +15,24 @@ const (
 	Dark  ImageBrightness = "dark"
 )
 
+// GetImageBrightnessSection is an alias for
+// GetImageBrightness
+func GetImageBrightnessSection(img image.Image, section ImageSection) (classification ImageBrightness, brightness float32) {
+	return GetImageBrightness(img, section)
+}
+
 // GetImageBrightness returns an ImageBrightness pertaining
 // to the brightness of an image `img` and section `section`
 func GetImageBrightness(img image.Image, section ImageSection) (classification ImageBrightness, brightness float32) {
 	bounds := getBounds(img, section)
 
+    return GetImageBrightnessBounds(img, bounds)
+}
+
+// GetImageBrightnessBounds returns an ImageBrightness
+// pertaining to the brightness of an image `img` within the
+// bounds of `bounds`
+func GetImageBrightnessBounds(img image.Image, bounds image.Rectangle) (classification ImageBrightness, brightness float32) {
 	var darkCount, lightCount int
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
